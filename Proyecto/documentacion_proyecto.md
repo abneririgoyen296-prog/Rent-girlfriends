@@ -80,84 +80,84 @@ Para desplegar el sistema en un entorno de evaluación:
 ### 7.1 Diagrama de Entidad-Relación (Base de Datos)
 ```mermaid
 erDiagram
-    USER ||--o| PROFILE : "tiene"
-    USER ||--o{ BOOKING : "realiza"
-    USER ||--o{ MESSAGE : "envía/recibe"
-    PROFILE ||--o{ REVIEW : "recibe"
-    BOOKING ||--o| REVIEW : "genera"
+    USUARIO ||--o| PERFIL : "tiene"
+    USUARIO ||--o{ RESERVA : "realiza"
+    USUARIO ||--o{ MENSAJE : "envía/recibe"
+    PERFIL ||--o{ RESENA : "recibe"
+    RESERVA ||--o| RESENA : "genera"
 
-    USER {
+    USUARIO {
         int id PK
-        string email
-        string password
-        string name
+        string correo
+        string contrasena
+        string nombre
         string cedula
-        string role
+        string rol
     }
-    PROFILE {
+    PERFIL {
         int id PK
-        int userId FK
-        string bio
-        float hourlyRate
-        float rating
+        int usuarioId FK
+        string biografia
+        float tarifaHora
+        float calificacion
     }
-    BOOKING {
+    RESERVA {
         int id PK
-        int clientId FK
-        int companionId FK
-        datetime date
-        string status
+        int clienteId FK
+        int acompananteId FK
+        datetime fecha
+        string estado
     }
-    MESSAGE {
+    MENSAJE {
         int id PK
-        int senderId FK
-        int receiverId FK
-        string content
-        datetime createdAt
+        int remitenteId FK
+        int destinatarioId FK
+        string contenido
+        datetime fechaCreacion
     }
-    REVIEW {
+    RESENA {
         int id PK
-        int bookingId FK
-        int profileId FK
-        int rating
-        string comment
+        int reservaId FK
+        int perfilId FK
+        int calificacion
+        string comentario
     }
 ```
 
 ### 7.2 Diagrama de Clases (Arquitectura de Software)
 ```mermaid
 classDiagram
-    class User {
-        +String email
-        +String role
+    class Usuario {
+        +String correo
+        +String rol
         +String cedula
-        +login()
-        +register()
+        +iniciarSesion()
+        +registrarse()
     }
-    class Profile {
-        +String bio
-        +Float hourlyRate
-        +updateProfile()
+    class Perfil {
+        +String biografia
+        +Float tarifaHora
+        +actualizarPerfil()
     }
-    class Booking {
-        +DateTime date
-        +String status
-        +create()
-        +updateStatus()
+    class Reserva {
+        +DateTime fecha
+        +String estado
+        +crear()
+        +actualizarEstado()
     }
     class Chat {
-        +List messages
-        +sendMessage()
-        +getHistory()
+        +List mensajes
+        +enviarMensaje()
+        +obtenerHistorial()
     }
-    class Review {
-        +Int rating
-        +String comment
-        +postReview()
+    class Resena {
+        +Int calificacion
+        +String comentario
+        +publicarResena()
     }
 
-    User "1" -- "1" Profile
-    User "1" -- "*" Booking
-    Booking "1" -- "0..1" Review
-    User "2" -- "*" Chat
+    Usuario "1" -- "1" Perfil
+    Usuario "1" -- "*" Reserva
+    Reserva "1" -- "0..1" Resena
+    Usuario "2" -- "*" Chat
 ```
