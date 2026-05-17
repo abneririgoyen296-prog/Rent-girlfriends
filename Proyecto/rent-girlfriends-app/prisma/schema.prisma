@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                Int       @id @default(autoincrement())
+  email             String    @unique
+  password          String
+  name              String
+  cedula            String?
+  role              String    @default("CLIENT")
+  companionBookings Booking[] @relation("CompanionBookings")
+  bookings          Booking[] @relation("ClientBookings")
+  receivedMessages  Message[] @relation("ReceivedMessages")
+  sentMessages      Message[] @relation("SentMessages")
+  profile           Profile?
+}
+
+model Profile {
+  id         Int      @id @default(autoincrement())
+  userId     Int      @unique
+  bio        String
+  photoUrl   String?
+  hourlyRate Float
+  rating     Float    @default(0)
+  user       User     @relation(fields: [userId], references: [id])
+  reviews    Review[]
+}
+
+model Booking {
+  id          Int      @id @default(autoincrement())
+  clientId    Int
+  companionId Int
+  date        DateTime
+  status      String   @default("PENDING")
+  companion   User     @relation("CompanionBookings", fields: [companionId], references: [id])
+  client      User     @relation("ClientBookings", fields: [clientId], references: [id])
+  review      Review?
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  content    String
+  createdAt  DateTime @default(now())
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+}
+
+model Review {
+  id        Int     @id @default(autoincrement())
+  bookingId Int     @unique
+  profileId Int
+  rating    Int
+  comment   String
+  profile   Profile @relation(fields: [profileId], references: [id])
+  booking   Booking @relation(fields: [bookingId], references: [id])
+}
